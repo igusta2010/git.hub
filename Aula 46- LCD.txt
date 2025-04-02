@@ -1,0 +1,88 @@
+#include <Arduino.h>
+
+#include <LiquidCrystal_I2C.h>// inclui a biblioteca ao comando
+
+LiquidCrystal_I2C lcd(0x27, 20, 4); // declara biblioteca
+
+#define pinLed 2 // define "apelidos" para componentes
+#define pinBotao 19
+
+byte rostoFeliz[] = { // cria figuras
+  B00000,
+  B00000,
+  B01010,
+  B01010,
+  B00000,
+  B10001,
+  B01110,
+  B00000
+};
+
+byte rostoTriste[] = {
+  B00000,
+  B00000,
+  B01010,
+  B01010,
+  B00000,
+  B01110,
+  B10001,
+  B00000
+};
+
+void setup()
+{
+  lcd.init(); //inicia o display
+  lcd.backlight(); // liga luz do display
+  Serial.begin(9600); // inicia Monitor Serial
+  pinMode(pinLed, OUTPUT); // define que o componente e saida
+  pinMode(pinBotao, INPUT_PULLUP); //entrada com resistor PULLUP 
+  lcd.createChar(0,rostoFeliz); 
+  lcd.createChar(1, rostoTriste);
+}
+
+void loop()
+{
+
+  bool estadoAtualBotao = digitalRead(pinBotao); // ler o pino em que o botao esta
+  static bool estadoAnteriorBotao = 1; // variavel booleana statica
+  static bool estadoLed = 0; 
+  static unsigned long tempoUltimaMudanca = 0; // variavel de tempo statica
+  unsigned long tempoAtual = millis(); // variavel de tempo que recebe millis
+  static bool ultimaAcao = 1;
+
+  if(estadoAtualBotao != estadoAnteriorBotao) // detecta mudanca no estado do botao
+  {
+    tempoUltimaMudanca = tempoAtual;
+  }
+  
+  if(tempoAtual - tempoUltimaMudanca > 50)
+  {
+    
+    if(estadoAtualBotao != ultimaAcao)
+    {
+      ultimaAcao = estadoAtualBotao;
+      if(estadoAtualBotao == 0)
+      {
+        estadoLed = !estadoLed; // inverte o estado do Led
+        
+        lcd.setCursor(7,1); // posicao que sera escrito no display
+        lcd.write(1);  // escreve a figura no display
+        lcd.setCursor(0,0); 
+        lcd.print("TITI TRISTE"); // escreve algo no display
+        digitalWrite(pinLed, LOW);
+        
+      }
+    
+      else
+      {
+       lcd.setCursor(7,1);
+       lcd.write(0);
+       lcd.setCursor(0,0);
+       lcd.print("TITI FELIZ  ");
+      digitalWrite(pinLed, HIGH);
+      }
+    }
+    }
+    
+     estadoAnteriorBotao = estadoAtualBotao; // repete tudo
+}
