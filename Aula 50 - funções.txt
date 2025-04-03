@@ -1,0 +1,45 @@
+#include <Arduino.h> //!inclue o arduino ao projeto
+
+const int pinBotao = 3; // uma variavel que diz que o pinBotao vale 3
+
+//! PROTOTIPOS DAS FUNÇÕES
+void ligaLed(int); // definicao de uma constante de pino
+void desligaLed(int);
+void piscaLed(int, unsigned long);
+int somaDeDoisNumeros(int, int);
+
+void setup()
+{
+  pinMode(2, OUTPUT); // define pino 2 como saida
+  Serial.begin(9600); // ativa o monitor serial
+}
+
+void loop()
+{
+  piscaLed(2, 100);
+  int resultadoDaSoma = somaDeDoisNumeros(4, 8);
+  Serial.println(resultadoDaSoma);
+}
+
+void ligaLed(int pin) //! uma funcao para ligar o led
+{
+  digitalWrite(pin, HIGH); // liga o led
+}
+
+void desligaLed(int pin) //! uma funcao para desligar o led
+{
+  digitalWrite(pin, LOW); // desliga o led
+}
+
+void piscaLed(int pin, unsigned long tempo) //! funcao vazia //unsigned e usado para armazenar o tempo
+{
+  ligaLed(pin);    // liga o led
+  delay(tempo);    // espera um tempo
+  desligaLed(pin); // desliga o led
+  delay(tempo);    // espera um tempo
+}
+int somaDeDoisNumeros(int numeroA, int numeroB) //! uma veriavel para somar dois numeros
+{
+  int resultado = numeroA + numeroB; // soma dos numeros
+  return resultado;                  // retorno do resultado
+}
