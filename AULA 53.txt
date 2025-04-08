@@ -1,0 +1,84 @@
+#include <Arduino.h>
+#include <Bounce2.h>
+#include <LiquidCrystal_I2C.h>
+
+LiquidCrystal_I2C lcd(0x27, 20, 4);
+
+#define Botao1 18
+#define Botao2 22
+#define Botao3 23
+#define LedBranco 2
+#define LedVermelho 4
+#define LedAmarelo 5
+#define LedVerde 23
+
+bool modoSelecao = 1;
+int contagem = 0;
+int intensidadeDoLedVERMELHO = 0;
+int intensidadeDoLedBRANCO = 0;
+int intensidadeDoLedAMARELO = 0;
+int intensidadeDoLedVERDE = 0;
+
+// * Instancias
+
+Bounce BotaoA = Bounce();
+Bounce BotaoB = Bounce();
+Bounce BotaoC = Bounce();
+
+void setup()
+{
+  lcd.init();
+  lcd.backlight();
+
+  BotaoA.attach(Botao1, INPUT_PULLUP);
+  BotaoB.attach(Botao2, INPUT_PULLUP);
+  BotaoC.attach(Botao3, INPUT_PULLUP);
+
+  pinMode(LedBranco, OUTPUT);
+  pinMode(LedVermelho, OUTPUT);
+  pinMode(LedAmarelo, OUTPUT);
+  pinMode(LedVerde, OUTPUT);
+
+  Serial.begin(9600);
+}
+
+void loop()
+{
+  BotaoA.update();
+  BotaoB.update();
+  BotaoC.update();
+
+  if (BotaoA.fell())
+  {
+    if (modoSelecao == 1)
+    {
+      contagem++;
+      if (contagem == 4)
+        contagem = 0;
+      {
+        Serial.println(contagem);
+      }
+    }
+  }
+
+  if (BotaoB.fell())
+
+  {
+    if (contagem == 3)
+      contagem = contagem;
+    {
+      if (contagem == 0)
+        contagem = 4;
+      {
+        contagem++;
+        Serial.println(contagem);
+      }
+    }
+  }
+
+  if (BotaoC.fell())
+  {
+    Serial.println("BOTAO C PRESSIONADO");
+  }
+}
+//! FEITO ATÉ O SEXTO PASSO
